@@ -36,7 +36,9 @@ int* octet_to_sextet(int v1, int v2, int v3) {
 	s2[7] = '\0';
 	s3[7] = '\0';
 	s4[7] = '\0';
-	
+
+
+	//this part is likely broken, judging by the output of this program. maybe there's issues with the terminator thingy?
 	int idx = 0;
 	for(int concat_index = 0; concat_index < 4;concat_index++){
 		
