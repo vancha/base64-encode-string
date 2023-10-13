@@ -2,7 +2,7 @@
 #include <string.h>
 #include <search.h>
 #include <assert.h>
-
+#include <stdlib.h>
 
 //takes an int, returns 8 chars
 char* int_to_binary_representation(const int value){
@@ -23,12 +23,13 @@ int* octet_to_sextet(int v1, int v2, int v3) {
         char* v1_binary = int_to_binary_representation(v1);
         char* v2_binary = int_to_binary_representation(v2); 
         char* v3_binary = int_to_binary_representation(v3);
+
 	//then append them together
 	int size = (sizeof(char)*24)+1;
 	char* concat_string = malloc(size);
-	strcpy(concat_string, v1_binary);
-	strcpy(concat_string, v2_binary);
-	strcpy(concat_string, v3_binary);
+	strcat(concat_string, v1_binary);
+	strcat(concat_string, v2_binary);
+	strcat(concat_string, v3_binary);
 	concat_string[size] = '\0';
 	//seperate the large binary string in to fourths
 	char s1[7],s2[7],s3[7],s4[7];
@@ -36,9 +37,7 @@ int* octet_to_sextet(int v1, int v2, int v3) {
 	s2[7] = '\0';
 	s3[7] = '\0';
 	s4[7] = '\0';
-
-
-	//this part is likely broken, judging by the output of this program. maybe there's issues with the terminator thingy?
+	
 	int idx = 0;
 	for(int concat_index = 0; concat_index < 4;concat_index++){
 		
@@ -57,7 +56,6 @@ int* octet_to_sextet(int v1, int v2, int v3) {
 		}
 		idx += 1;
 	}
-
 	int* sextet = malloc(sizeof(int)*4);
 	sextet[0] = binary_string_to_int(s1);
 	sextet[1] = binary_string_to_int(s2);
@@ -81,48 +79,26 @@ int main() {
 		length = length + 1;
 		printf("%i",length);
 	}
-	
+
 	char* new_str[length];
 	strcpy(new_str, input);
+	new_str[length] = '\0';
 	
-	printf("input: %s\n",new_str);
-	printf("output: ");
+	char* test = &new_str;
+	
 	for(int chunk = 0; chunk < length;chunk+=3){
-		//printf("chunk %i\n",chunk);
-		int* sextet = octet_to_sextet(&new_str[chunk],&new_str[chunk+1],&new_str[chunk+2]);
+		char first = *test;
+		test++;
+		char second = *test;
+		test++;
+		char third = *test;
+		test++;
+		int* sextet = octet_to_sextet(first,second,third);
+		
 		for(int new_char = 0; new_char < 4;new_char++){
 			printf("%c",value_string[sextet[new_char]]);
 		}
+		free(sextet);
 	}
-
-	/*int man[3];
-	//get first three numbers, so 3 * 4 bytes
-	for(int i = 0; i < 3; i++){
-		man[i] = input[i];
-	}
-	
-	char* binary = int_to_binary_string(man[0]);
-	char* binary2 = int_to_binary_string(man[1]);
-	char* binary3 = int_to_binary_string(man[2]);
-
-	char octet[24] = "";
-	strcat(octet, binary);
-	strcat(octet, binary2);
-	strcat(octet, binary3);
-
-	int* sextet = octet_to_sextet(octet);
-
-	for(int i = 0; i < 4;i++){
-		printf("%i, char: %c\n",  sextet[i], value_string[sextet[i]]);
-	}
-
-	int back_to_int = binary_string_to_int(binary);
-	
-
-
-	free(binary);
-	free(binary2);
-	free(binary3);
-	//free(sextet);*/
 	return 0;
 }
